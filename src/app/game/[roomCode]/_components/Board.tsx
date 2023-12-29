@@ -70,9 +70,19 @@ export default function Board({
     try {
       const channel = pusherClient.subscribe(`private-${room_code}`);
       channel.bind("game:place", ({ col, sender }: { col: number, sender: string }) => {
-        if(turnRef.current) return;
-        if(resultRef.current) return;
-        if(sender !== match) return;
+        alert("message receive");
+        if(turnRef.current) {
+          alert("return 1");
+          return;
+        }
+        if(resultRef.current) {
+          alert("return 2");
+          return;
+        }
+        if(sender !== match) {
+          alert("return 3");
+          return;
+        }
         const board_copy = boardRef.current;
         var i = 5;
         while(true) {
