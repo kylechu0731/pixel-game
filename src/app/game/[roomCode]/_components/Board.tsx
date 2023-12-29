@@ -48,6 +48,8 @@ export default function Board({
     board_copy[i][col] = 1;
     setBoard(board_copy);
 
+    await sleep(2000);
+
     console.log("[placeToken]");
     const res = await fetch("/api/games", {
       method: "POST",
@@ -61,6 +63,8 @@ export default function Board({
     }
   }
 
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
   useEffect(() => {
     setTurn(!equal);
     setGuest(equal);
@@ -70,19 +74,9 @@ export default function Board({
     try {
       const channel = pusherClient.subscribe(`private-${room_code}`);
       channel.bind("game:place", ({ col, sender }: { col: number, sender: string }) => {
-        alert("message receive");
-        if(turnRef.current) {
-          alert("return 1");
-          return;
-        }
-        if(resultRef.current) {
-          alert("return 2");
-          return;
-        }
-        if(sender !== match) {
-          alert("return 3");
-          return;
-        }
+        if(turnRef.current) return;
+        if(resultRef.current) return;
+        if(sender !== match) return;
         const board_copy = boardRef.current;
         var i = 5;
         while(true) {
@@ -149,7 +143,9 @@ export default function Board({
           sendWin(room_code);
           handleEnd();
         }
-        else setTurn(true);
+        else {
+          sleep(2000).then(() => setTurn(true));
+        }
       })
       channel.bind("game:win", ({ sender }: { sender: string }) => {
         if(sender !== match) return;
