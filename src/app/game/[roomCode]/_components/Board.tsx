@@ -32,6 +32,8 @@ export default function Board({
   const router = useRouter();
   const { sendWin } = useGame();
 
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
   const placeToken = async (col: number) => {
     if(board[0][col]) return;
     if(!turn) return;
@@ -47,6 +49,8 @@ export default function Board({
     }
     board_copy[i][col] = 1;
     setBoard(board_copy);
+
+    await sleep(5000);
 
     console.log("[placeToken]");
     const res = await fetch("/api/games", {
@@ -74,6 +78,7 @@ export default function Board({
         if(turnRef.current) return;
         if(resultRef.current) return;
         if(sender !== match) return;
+
         const board_copy = boardRef.current;
         var i = 5;
         while(true) {
