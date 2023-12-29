@@ -160,6 +160,7 @@ export default function Board({
       <div className="flex -my-2">
         {[1,2,3,4,5,6,7].map((pos) => (
           <div 
+            key={pos}
             className={cn(
               "w-12 h-12 mx-[-2.5px] text-center text-2xl",
               guest? "text-red-600": "text-yellow-300",
@@ -184,7 +185,7 @@ export default function Board({
       ))}
       { !result && <>
         { turn?
-          <div className="w-full text-center mt-3 text-lg animate-bounce">It's your turn!</div>
+          <div className="w-full text-center mt-3 text-lg animate-bounce">It&apos;s your turn!</div>
           :
           <div className="w-full text-center mt-3 text-lg text-gray-400">Waiting for <span className="text-yellow-200">{match}</span>...</div>
         }
