@@ -68,7 +68,10 @@ export default function Board({
   }
 
   useEffect(() => {
-    if(stop) return;
+    if(stop) {
+      setTurn(false);
+      return;
+    }
     sleep(5000).then(() => {
       setTurn(!equal);
       setGuest(equal);
@@ -202,7 +205,8 @@ export default function Board({
       })
       channel.bind("game:leave", ({ sender }: { sender: string }) => {
         if(sender !== match) return;
-        handleLeave();
+        if(resultRef.current === 0)
+          setResult(-2);
         pusherClient.unsubscribe(`private-${room_code}`);
       })
       channel.bind("game:tie", ({ sender }: { sender: string }) => {
@@ -256,6 +260,7 @@ export default function Board({
       { result === 1 && <div className="w-full text-center mt-3 text-lg text-yellow-300">You win!!!</div>}
       { result === -1 && <div className="w-full text-center mt-3 text-lg"><span className="text-yellow-200">{match}</span> win.</div>}
       { result === 2 && <div className="w-full text-center mt-3 text-lg">Tie!</div>}
+      { result === -2 && <div className="w-full text-center mt-3 text-lg"><span className="text-yellow-200">{match}</span> left.</div>}
     </div>
   );
 }

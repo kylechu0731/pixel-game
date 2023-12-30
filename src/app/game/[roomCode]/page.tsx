@@ -65,10 +65,8 @@ function RoomPage({
         </div>
       </div>
       <div 
-        className={cn("mt-2 -mb-4 text-black", end && "text-gray-300 hover:text-white cursor-pointer")}
-        onClick={() => {
-          if(end) handleLeave();
-        }}
+        className="mt-2 -mb-4 text-gray-300 hover:text-white cursor-pointer"
+        onClick={handleLeave}
       >Click here to return to menu...</div>
       <Board 
         room_code={roomCode}
@@ -76,7 +74,7 @@ function RoomPage({
         equal={equal}
         handleEnd={() => setEnd(true)}
         handleLeave={() => setLeave(true)}
-        stop={leave}
+        stop={leave || end}
       />
       {ruleDialog && <RuleDialog handleClose={() => setRuleDialog(false)} guest={equal}/>}
     </div>
