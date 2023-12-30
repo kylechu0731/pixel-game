@@ -29,7 +29,7 @@ export const roomsTable = pgTable(
   {
     id: serial("id").primaryKey(),
     roomCode: varchar("room_code").unique(),
-    hostId: varchar("host_id").unique().references(() => usersTable.displayId, {
+    hostId: varchar("host_id").references(() => usersTable.displayId, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),

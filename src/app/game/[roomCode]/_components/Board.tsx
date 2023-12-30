@@ -205,6 +205,7 @@ export default function Board({
       })
       channel.bind("game:leave", ({ sender }: { sender: string }) => {
         if(sender !== match) return;
+        handleLeave();
         if(resultRef.current === 0)
           setResult(-2);
         pusherClient.unsubscribe(`private-${room_code}`);
