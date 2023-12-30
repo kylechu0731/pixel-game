@@ -36,7 +36,7 @@ export default function Board({
   const router = useRouter();
   const { sendWin, sendTie } = useGame();
 
-  //const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
   const placeToken = async (col: number) => {
     if(board[0][col]) return;
@@ -54,8 +54,6 @@ export default function Board({
     board_copy[i][col] = 1;
     setBoard(board_copy);
 
-    //await sleep(5000);
-
     console.log("[placeToken]");
     const res = await fetch("/api/games", {
       method: "POST",
@@ -71,8 +69,10 @@ export default function Board({
 
   useEffect(() => {
     if(stop) return;
-    setTurn(!equal);
-    setGuest(equal);
+    sleep(5000).then(() => {
+      setTurn(!equal);
+      setGuest(equal);
+    })
   }, [equal]);
 
   useEffect(() => {
@@ -144,7 +144,7 @@ export default function Board({
              board_copy[i-2][col+2] === 2 &&
              board_copy[i-3][col+3] === 2) fail = true;
         }
-        fail=false;
+  
         if(fail) {
           setResult(-1);
           sendWin(room_code);
@@ -184,9 +184,7 @@ export default function Board({
       console.log(error);
       router.push("/menu");
     }
-    // return () => {
-    //   pusherClient.unsubscribe(`private-${room_code}`);
-    // };
+
   });
 
   return (
