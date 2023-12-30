@@ -102,19 +102,25 @@ export default function Board({
              board_copy[i+2][col] === 2 &&
              board_copy[i+3][col] === 2) fail = true;
         }
-        if(i >= 3) { // up
-          if(board_copy[i][col] === 2 &&
-             board_copy[i-1][col] === 2 &&
-             board_copy[i-2][col] === 2 &&
-             board_copy[i-3][col] === 2) fail = true;
-        }
-        if(col >= 3) { // left
+        if(col >= 3) { // xooo
           if(board_copy[i][col] === 2 &&
              board_copy[i][col-1] === 2 &&
              board_copy[i][col-2] === 2 &&
              board_copy[i][col-3] === 2) fail = true;
         }
-        if(col <= 3) { // right
+        if(col >= 1 && col+2 < 7) { // oxoo
+          if(board_copy[i][col] === 2 &&
+             board_copy[i][col-1] === 2 &&
+             board_copy[i][col+1] === 2 &&
+             board_copy[i][col+2] === 2) fail = true;
+        }
+        if(col >= 2 && col+1 < 7) { // ooxo
+          if(board_copy[i][col] === 2 &&
+             board_copy[i][col-2] === 2 &&
+             board_copy[i][col-1] === 2 &&
+             board_copy[i][col+1] === 2) fail = true;
+        }
+        if(col <= 3) { // ooox
           if(board_copy[i][col] === 2 &&
              board_copy[i][col+1] === 2 &&
              board_copy[i][col+2] === 2 &&
@@ -126,23 +132,47 @@ export default function Board({
              board_copy[i+2][col-2] === 2 &&
              board_copy[i+3][col-3] === 2) fail = true;
         }
-        if(i < 3 && col <= 3) { // down-right
+        if(i+2 < 6 && col >= 2 && i >= 1 && col+1 < 7) { //
           if(board_copy[i][col] === 2 &&
-             board_copy[i+1][col+1] === 2 &&
-             board_copy[i+2][col+2] === 2 &&
-             board_copy[i+3][col+3] === 2) fail = true;
+             board_copy[i+1][col-1] === 2 &&
+             board_copy[i+2][col-2] === 2 &&
+             board_copy[i-1][col+1] === 2) fail = true;
         }
-        if(i >= 3 && col >= 3) { // up-left
+        if(i+1 < 6 && col >= 1 && i >= 2 && col+2 < 7) { //
           if(board_copy[i][col] === 2 &&
-             board_copy[i-1][col-1] === 2 &&
-             board_copy[i-2][col-2] === 2 &&
-             board_copy[i-3][col-3] === 2) fail = true;
+             board_copy[i+1][col-1] === 2 &&
+             board_copy[i-1][col+1] === 2 &&
+             board_copy[i-2][col+2] === 2) fail = true;
         }
         if(i >= 3 && col <= 3) { // up-right
           if(board_copy[i][col] === 2 &&
              board_copy[i-1][col+1] === 2 &&
              board_copy[i-2][col+2] === 2 &&
              board_copy[i-3][col+3] === 2) fail = true;
+        }
+        if(i < 3 && col <= 3) { // down-right
+          if(board_copy[i][col] === 2 &&
+             board_copy[i+1][col+1] === 2 &&
+             board_copy[i+2][col+2] === 2 &&
+             board_copy[i+3][col+3] === 2) fail = true;
+        }
+        if(i+2 < 6 && col+2 < 7 && i >= 1 && col >= 1) { //
+          if(board_copy[i][col] === 2 &&
+             board_copy[i+1][col+1] === 2 &&
+             board_copy[i+2][col+2] === 2 &&
+             board_copy[i-1][col-1] === 2) fail = true;
+        }
+        if(i+1 < 6 && col+1 < 7 && i >= 2 && col >= 2) { //
+          if(board_copy[i][col] === 2 &&
+             board_copy[i+1][col+1] === 2 &&
+             board_copy[i-1][col-1] === 2 &&
+             board_copy[i-2][col-2] === 2) fail = true;
+        }
+        if(i >= 3 && col >= 3) { // up-left
+          if(board_copy[i][col] === 2 &&
+             board_copy[i-1][col-1] === 2 &&
+             board_copy[i-2][col-2] === 2 &&
+             board_copy[i-3][col-3] === 2) fail = true;
         }
   
         if(fail) {

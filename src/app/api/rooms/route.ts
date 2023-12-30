@@ -15,7 +15,8 @@ export async function GET() {
     const rooms = await db
       .select({ 
         room_code: roomsTable.roomCode,
-        host_name: roomsTable.hostName
+        host_name: roomsTable.hostName,
+        joined: roomsTable.joined,
       })
       .from(roomsTable)
       .execute();
@@ -49,6 +50,34 @@ export async function POST(req: NextRequest) {
         hostName: session.user.username
       })
       .onConflictDoNothing()
+      .execute();
+  } catch(error) {
+    return NextResponse.json(
+      { error: "Something went wrong." },
+      { status: 500 }
+    );
+  }
+
+  return new NextResponse("OK", { status: 200 });
+}
+
+export async function PUT(req: NextRequest) {
+  const data = await req.json();
+
+  const session = await auth();
+    if (!session?.user?.email || !session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+  const {
+    room_code
+  } = data as RoomReq;
+
+  try {
+    await db
+      .update(roomsTable)
+      .set({ joined: true })
+      .where(eq(roomsTable.roomCode, room_code))
       .execute();
   } catch(error) {
     return NextResponse.json(

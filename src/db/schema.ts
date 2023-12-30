@@ -34,6 +34,7 @@ export const roomsTable = pgTable(
       onUpdate: "cascade",
     }),
     hostName: varchar("host_name").notNull(),
+    joined: boolean("joined").default(false),
   }
 )
 

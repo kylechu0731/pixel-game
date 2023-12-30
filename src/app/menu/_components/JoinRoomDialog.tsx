@@ -1,7 +1,6 @@
 import { useJoin } from "@/app/hooks/useJoin";
 import { useRoom } from "@/app/hooks/useRoom";
 import { useToast } from "@/components/toast/use-toast";
-import { auth } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -17,10 +16,10 @@ export default function JoinRoomDialog({
   const router = useRouter();
 
   const handleJoin = () => {
-    checkRooms(code).then((match) => {
-      if(match !== "") {
-        joinRoom(code);
-        router.push(`/game/${code}?match=${match}`);
+    checkRooms(code.toUpperCase()).then((arr) => {
+      if(!arr[0].joined && arr[0].host_name !== "") {
+        joinRoom(code.toUpperCase());
+        router.push(`/game/${code.toUpperCase()}?match=${arr[0].host_name}`);
       } else {
         toast({
           variant: "destructive",

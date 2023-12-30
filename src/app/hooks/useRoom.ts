@@ -7,10 +7,13 @@ export const useRoom = () => {
       console.log("Something Wrong.");
       return;
     }
-    if(data.rooms.filter((room: { room_code: string }) => room.room_code === room_code).length > 0)
-      return (data.rooms.filter((room: { room_code: string }) => room.room_code === room_code)[0].host_name);
-    else
-      return "";
+
+    return data.rooms.filter((room: { room_code: string }) => room.room_code === room_code);
+
+    // if(data.rooms.filter((room: { room_code: string }) => room.room_code === room_code).length > 0)
+    //   return (data.rooms.filter((room: { room_code: string }) => room.room_code === room_code)[0].host_name);
+    // else
+    //   return "";
   }
 
   const createRoom = async (room_code: string) => {

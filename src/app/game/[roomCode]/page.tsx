@@ -20,7 +20,7 @@ function RoomPage({
     match?: string;
   }
 }) {
-  const [equal, setEqual] = useState(false);
+  const [equal, setEqual] = useState(true);
   const [end, setEnd] = useState(false);
   const [leave, setLeave] = useState(false);
   const [ruleDialog, setRuleDialog] = useState(false);
@@ -28,8 +28,9 @@ function RoomPage({
   const { sendLeave } = useGame();
   const router = useRouter();
 
-  checkRooms(roomCode).then((host) => {
-    setEqual(host === match)
+  checkRooms(roomCode).then((arr) => {
+    if(arr.length === 0) return;
+    setEqual(arr[0].host_name === match)
   });
 
   const handleLeave = () => {

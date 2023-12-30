@@ -6,14 +6,24 @@ export const useJoin = () => {
     // const session = await auth();
     
     console.log("[joinRoom]");
-    const res = await fetch("/api/joins", {
+    const res1 = await fetch("/api/joins", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ room_code })
     })
-    if(!res.ok) {
+    if(!res1.ok) {
+      return;
+    }
+    const res2 = await fetch("/api/rooms", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ room_code })
+    })
+    if(!res2.ok) {
       return;
     }
   }
