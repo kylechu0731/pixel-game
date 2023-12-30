@@ -11,28 +11,32 @@ export default function Board({
   match,
   equal,
   handleEnd,
+  handleLeave,
+  stop,
 }: {
   room_code: string,
   match: string,
   equal: boolean,
   handleEnd: () => void,
+  handleLeave: () => void,
+  stop: boolean,
 }) {
   const [board, setBoard, boardRef] = useState([
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0 ],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
   ]); // 0: empty 1: self 2: match
   const [guest, setGuest] = useState(equal);
-  const [turn, setTurn, turnRef] = useState(!equal);
+  const [turn, setTurn, turnRef] = useState(false);
   const [hover, setHover] = useState(0);
   const [result, setResult, resultRef] = useState(0);
   const router = useRouter();
-  const { sendWin } = useGame();
+  const { sendWin, sendTie } = useGame();
 
-  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  //const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
   const placeToken = async (col: number) => {
     if(board[0][col]) return;
@@ -50,7 +54,7 @@ export default function Board({
     board_copy[i][col] = 1;
     setBoard(board_copy);
 
-    await sleep(5000);
+    //await sleep(5000);
 
     console.log("[placeToken]");
     const res = await fetch("/api/games", {
@@ -66,6 +70,7 @@ export default function Board({
   }
 
   useEffect(() => {
+    if(stop) return;
     setTurn(!equal);
     setGuest(equal);
   }, [equal]);
@@ -139,14 +144,25 @@ export default function Board({
              board_copy[i-2][col+2] === 2 &&
              board_copy[i-3][col+3] === 2) fail = true;
         }
-        
+        fail=false;
         if(fail) {
           setResult(-1);
           sendWin(room_code);
           handleEnd();
         }
         else {
-          setTurn(true);
+          var full = true;
+          for(var c=0; c<7; c+=1) {
+            if(!board_copy[0][c]) {
+              full = false;
+              break;
+            }
+          }
+          if(full) {
+            setResult(2);
+            sendTie(room_code);
+            handleEnd();
+          } else setTurn(true);
         }
       })
       channel.bind("game:win", ({ sender }: { sender: string }) => {
@@ -154,13 +170,23 @@ export default function Board({
         setResult(1);
         handleEnd();
       })
+      channel.bind("game:leave", ({ sender }: { sender: string }) => {
+        if(sender !== match) return;
+        handleLeave();
+        pusherClient.unsubscribe(`private-${room_code}`);
+      })
+      channel.bind("game:tie", ({ sender }: { sender: string }) => {
+        if(sender !== match) return;
+        setResult(2);
+        handleEnd();
+      })
     } catch(error) {
       console.log(error);
       router.push("/menu");
     }
-    return () => {
-      pusherClient.unsubscribe(`private-${room_code}`);
-    };
+    // return () => {
+    //   pusherClient.unsubscribe(`private-${room_code}`);
+    // };
   });
 
   return (
@@ -201,6 +227,7 @@ export default function Board({
       }
       { result === 1 && <div className="w-full text-center mt-3 text-lg text-yellow-300">You win!!!</div>}
       { result === -1 && <div className="w-full text-center mt-3 text-lg"><span className="text-yellow-200">{match}</span> win.</div>}
+      { result === 2 && <div className="w-full text-center mt-3 text-lg">Tie!</div>}
     </div>
   );
 }

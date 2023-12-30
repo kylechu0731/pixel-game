@@ -18,11 +18,11 @@ export default function Home() {
               onClick={() => setLogin(true)}
             >Go!</button>
             <div>Press &quot;Go!&quot; to get started!</div>
-            <div className="-mt-20">!! Please adjust your screen size to fit the white border !!</div>
+            <div className="-mt-20 text-yellow-300">!! Please adjust your window size to fit the white border !!</div>
           </>
         }
       </div>
-      {!login && <div className="text-red-500">You should NOT see this</div>}
+      {!login && <div className="text-red-500">You should NOT see this, please adjust your window size.</div>}
     </>
   )
 }

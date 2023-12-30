@@ -32,6 +32,14 @@ export async function POST(req: NextRequest) {
       await pusherServer.trigger(`private-${room_code}`, "game:win", { 
         sender: session?.user?.username ?? "undefined"
       })
+    if(col === -2)
+      await pusherServer.trigger(`private-${room_code}`, "game:leave", { 
+        sender: session?.user?.username ?? "undefined"
+      })
+    if(col === -3)
+      await pusherServer.trigger(`private-${room_code}`, "game:tie", { 
+        sender: session?.user?.username ?? "undefined"
+      })
   } catch(error) {
     return NextResponse.json({ error: "Bad" }, { status: 400 });
   }

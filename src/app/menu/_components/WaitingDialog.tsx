@@ -33,9 +33,9 @@ export default function WaitingDialog({
       console.log(error);
       router.push("/menu");
     }
-    return () => {
-      pusherClient.unsubscribe(`private-${room_code}`);
-    };
+    // return () => {
+    //   pusherClient.unsubscribe(`private-${room_code}`);
+    // };
   })
 
   return (
@@ -58,6 +58,7 @@ export default function WaitingDialog({
           className="mt-10 border-2 border-white px-2 rounded-sm hover:bg-white hover:text-black"
           onClick={() => {
             deleteRoom(room_code);
+            pusherClient.unsubscribe(`private-${room_code}`);
             handleBack();
           }}
         >Back</button>

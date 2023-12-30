@@ -5,6 +5,9 @@ import Board from "./_components/Board";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { pusherClient } from "@/lib/pusher/client";
+import { useGame } from "@/app/hooks/useGame";
+import RuleDialog from "./_components/RuleDialog";
 
 function RoomPage({
   params: { roomCode },
@@ -19,7 +22,10 @@ function RoomPage({
 }) {
   const [equal, setEqual] = useState(false);
   const [end, setEnd] = useState(false);
+  const [leave, setLeave] = useState(false);
+  const [ruleDialog, setRuleDialog] = useState(false);
   const { checkRooms, deleteRoom } = useRoom();
+  const { sendLeave } = useGame();
   const router = useRouter();
 
   checkRooms(roomCode).then((host) => {
@@ -28,6 +34,8 @@ function RoomPage({
 
   const handleLeave = () => {
     deleteRoom(roomCode);
+    sendLeave(roomCode);
+    pusherClient.unsubscribe(`private-${roomCode}`);
     router.push("/menu");
   }
 
@@ -42,11 +50,17 @@ function RoomPage({
         </div>
         <div className="flex gap-1">
             <div className="px-1 bg-white text-black rounded">Match</div>
-            <div className="px-2 border border-white rounded text-center">{match?? "undefined"}</div>
+            <div className={cn("px-2 border border-white rounded text-center", leave && "text-gray-300")}>{leave? "Has left":(match?? "undefined")}</div>
         </div>
         <div className="flex gap-1">
             <div className="px-1 bg-white text-black rounded">Game</div>
             <div className="px-2 border border-white rounded text-center">Connect Four</div>
+            { !leave &&
+            <button 
+              className="ml-1 px-2 border border-white bg-black text-white rounded hover:bg-white hover:text-black"
+              onClick={() => setRuleDialog(true)}
+            >?</button>
+            }
         </div>
       </div>
       <div 
@@ -55,7 +69,15 @@ function RoomPage({
           if(end) handleLeave();
         }}
       >Click here to return to menu...</div>
-      <Board room_code={roomCode} match={match?? "undefined"} equal={equal} handleEnd={() => setEnd(true)}/>
+      <Board 
+        room_code={roomCode}
+        match={match?? "undefined"}
+        equal={equal}
+        handleEnd={() => setEnd(true)}
+        handleLeave={() => setLeave(true)}
+        stop={leave}
+      />
+      {ruleDialog && <RuleDialog handleClose={() => setRuleDialog(false)} guest={equal}/>}
     </div>
   );
 }
